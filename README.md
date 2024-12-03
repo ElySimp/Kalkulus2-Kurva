@@ -1,0 +1,1 @@
+# Kalkulus2-Kurva
