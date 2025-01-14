@@ -8,6 +8,7 @@
 #include <iomanip>
 using namespace std;
 
+// Function to apply an operation to two numbers
 double applyOperation(double a, double b, char op) {
     switch (op) {
         case '+': return a + b;
@@ -22,7 +23,7 @@ double applyOperation(double a, double b, char op) {
     }
 }
 
-// Function to determine operator precedence
+// Function to check the precedence of operators
 int precedence(char op) {
     if (op == '+' || op == '-') return 1;
     if (op == '*' || op == '/') return 2;
@@ -30,24 +31,26 @@ int precedence(char op) {
     return 0;
 }
 
-// Function to evaluate the expression
+// Helper function to check if a character is an operator
+bool isOperator(char c) {
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+}
+
+// Function to evaluate the mathematical expression
 double evaluateExpression(const string& expression) {
-    stack<double> values; // Stack to store numbers
-    stack<char> operators; // Stack to store operators
+    stack<double> values;    // Stack for numbers
+    stack<char> operators;   // Stack for operators
 
     for (size_t i = 0; i < expression.length(); ++i) {
         if (isspace(expression[i])) {
             continue; // Skip whitespace
-        } else if (isdigit(expression[i]) || (expression[i] == '-' && (i == 0 || expression[i - 1] == '('))) {
-            // Handle negative numbers
+        } else if (isdigit(expression[i]) || 
+                   (expression[i] == '-' && (i == 0 || expression[i - 1] == '(' || isOperator(expression[i - 1])))) {
+            // Handle numbers and unary minus
             double value = 0;
-            bool isNegative = false;
-            if (expression[i] == '-') {
-                isNegative = true;
-                ++i;
-            }
+            bool isNegative = (expression[i] == '-');
+            if (isNegative) ++i;
 
-            // Parse multi-digit numbers
             while (i < expression.length() && (isdigit(expression[i]) || expression[i] == '.')) {
                 if (expression[i] == '.') {
                     double decimalPlace = 0.1;
@@ -65,10 +68,7 @@ double evaluateExpression(const string& expression) {
             }
             --i;
 
-            if (isNegative) {
-                value = -value;
-            }
-
+            if (isNegative) value = -value;
             values.push(value);
         } else if (expression[i] == '(') {
             operators.push(expression[i]);
@@ -80,8 +80,7 @@ double evaluateExpression(const string& expression) {
                 values.push(applyOperation(a, b, op));
             }
             if (!operators.empty()) operators.pop(); // Remove '('
-        } else {
-            // Current character is an operator
+        } else if (isOperator(expression[i])) {
             while (!operators.empty() && precedence(operators.top()) >= precedence(expression[i])) {
                 double b = values.top(); values.pop();
                 double a = values.top(); values.pop();
@@ -89,6 +88,8 @@ double evaluateExpression(const string& expression) {
                 values.push(applyOperation(a, b, op));
             }
             operators.push(expression[i]);
+        } else {
+            throw invalid_argument("Invalid character in expression");
         }
     }
 
@@ -114,15 +115,11 @@ int equationToResult(const string& equation) {
     }
 }
 
-
-// Function to convert an integer to a string
 string intToString(int number) {
     stringstream ss;
     ss << number; // Insert the integer into the stream
     return ss.str(); // Extract and return the string
 }
-
-
 
 int main() {
 	int titik_tengah_x; 
@@ -236,44 +233,54 @@ int main() {
 					opposite = 1;
 				}
 				if (i >= 0) {
-					if (i > 9) {
-						for (int k = 0; k < equation.length(); k++) {
+					for (int k = 0; k < equation.length(); k++) {
 						if (k == j) {
-							positiveTemp += intToString(i);
-							continue;
+							if (k - 1 > -1) {
+								// 57
+								if (equation[k - 1] >= 48 || equation[k - 1] < 58) {
+									positiveTemp += '*';
+								}
+							}
+						positiveTemp += intToString(i);
+						continue;
 						}
 						positiveTemp += equation[k];
-						}
-				
 					}
-					equation[j] =  ('0' + i);
 				}
 				else if (i < 0) {
 					for (int k = 0; k < equation.length(); k++) {
-						if (k == j && i < -9) {
-							negativeTemp += '-';
+						if (k == j) {
+							if (k - 1 > -1) {
+								// 57
+								if (equation[k - 1] >= 48 || equation[k - 1] < 58) {
+									negativeTemp += '*';
+								}
+							}
 							negativeTemp += intToString(i);
 							continue;
 						}
-						if (k == j && i > -10) {
-							negativeTemp += '-';
-							negativeTemp += '0' + i * (-1);
-							continue;
-						}
+						
 						negativeTemp += equation[k];
 					}
 				}
 			}
 		}
-		cout << "x finding success" << positiveTemp << endl;
+	
+		cout << "positive equation : " << positiveTemp << endl;
+		cout << "negative equation : " << negativeTemp << ' ' << endl;
+		cout << "normal equation : " << equation << endl;
+		
 		// untuk negatif
 		if (i < 0) {
+			cout << "point -1 reached" << endl;
 			// kalau koordinat melebihi size tabel
+		
 			if (equationToResult(negativeTemp) <= -1 * originalX || equationToResult(negativeTemp) > originalX) {
 				negativeTemp = "";
 				continue;
 			}
-			
+			cout << "point one reached" << endl;
+
 			grafik[titik_tengah_y - equationToResult(negativeTemp)][titik_tengah_x + i * 2] = '$';
 			
 			if (opposite == 1) {
@@ -291,13 +298,13 @@ int main() {
 		}
 		// untuk positif
 		else if (i >= 0) {
-			if (i > 9 && equationToResult(positiveTemp) >= originalX) {
+			if (equationToResult(positiveTemp) >= originalX) {
 				cout << "too much2" << endl;
 				equation = originalEquation;
 				positiveTemp = "";
 				continue;
 			}
-			else if (i > 9 && equationToResult(positiveTemp) < originalX) {
+			else if (equationToResult(positiveTemp) < originalX) {
 				grafik[titik_tengah_y - equationToResult(positiveTemp)][titik_tengah_x + i * 2] = '$';
 				
 				if (opposite == 1) {
@@ -306,11 +313,7 @@ int main() {
 					grafik[titik_tengah_y - i][titik_tengah_x + equationToResult(positiveTemp) * 2] = '$';
 				}
 			}
-			else if (equationToResult(equation) >= originalX) {
-				cout << "too much " << endl;
-				equation = originalEquation;
-				continue;
-			}
+			
 				
 			else {
 				grafik[titik_tengah_y - equationToResult(equation)][titik_tengah_x + i * 2] = '$';
