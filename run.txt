@@ -1,0 +1,1 @@
+g++ -Wall -Wextra -g3 -I"C:/msys64/mingw64/include" 2dimensi.cpp -o 2dimensi.exe "C:/msys64/mingw64/lib/libsfml-graphics.dll.a" "C:/msys64/mingw64/lib/libsfml-window.dll.a" "C:/msys64/mingw64/lib/libsfml-system.dll.a" -lopengl32 -lgdi32 -lwinmm -lfreetype

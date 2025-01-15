@@ -16,14 +16,14 @@ double applyOperator(char op, double a, double b) {
         case '+': return a + b;
         case '-': return a - b;
         case '*': return a * b;
-        case '/': return a / b;
+        case '/': if (b == 0) throw runtime_error("Pembagian oleh nol"); return a / b;
         case '^': return pow(a, b);
         default: throw runtime_error("Operator tidak dikenal");
     }
 }
 
 // Fungsi untuk mengevaluasi ekspresi
-double evaluateExpression(const string& expression, double x) {
+double evaluateExpression(const string& expression, double x, double y) {
     stack<double> values;
     stack<char> operators;
 
@@ -46,10 +46,12 @@ double evaluateExpression(const string& expression, double x) {
     istringstream iss(expression);
     string token;
     while (iss >> token) {
-        if (isdigit(token[0]) || token[0] == '.') {
+        if ((isdigit(token[0]) || token[0] == '.' || (token[0] == '-' && token.size() > 1 && isdigit(token[1])))) {
             values.push(stod(token));
         } else if (token == "x") {
             values.push(x);
+        } else if (token == "y") {
+            values.push(y);
         } else if (token == "(") {
             operators.push('(');
         } else if (token == ")") {
@@ -95,10 +97,16 @@ void plotFunction(const string& function) {
         for (int j = 0; j < width; ++j) {
             double x = xMin + j * dx;
             double y = yMin + i * dy;
-            double yFunc = evaluateExpression(function, x);
+            double yFunc;
+
+            try {
+                yFunc = evaluateExpression(function, x, 0);
+            } catch (const runtime_error&) {
+                yFunc = NAN; // Menangani error evaluasi
+            }
 
             // Jika titik fungsi dekat dengan grid, tandai '*'
-            if (abs(y - yFunc) < dy / 2) {
+            if (!isnan(yFunc) && abs(y - yFunc) < dy / 2) {
                 cout << "*";
             } else if (abs(y) < dy / 2) { // Sumbu x
                 cout << "-";
@@ -114,7 +122,7 @@ void plotFunction(const string& function) {
 
 int main() {
     string userFunction;
-    cout << "Masukkan fungsi matematika (contoh: x^2 + 1, x + 1, x^2 - x): ";
+    cout << "Masukkan fungsi matematika (contoh: y * y - x, -x * x, y^2 + x^2): ";
     getline(cin, userFunction);
 
     cout << "\nTabel Kartesius (resolusi tinggi):\n";

@@ -1,6 +1,27 @@
 {
   "version": "0.2.0",
   "configurations": [
+    
+    {
+      "name": "Run SFML Project",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe"
+    },
     {
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
@@ -8,8 +29,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": ".",
-      "program": "build/Debug/outDebug",
+      "cwd": "c:/Users/faldo/Documents/File Kuliah/KULIAH/SEMESTER 3/Kalkulus 2/Project Kalkulus/Kalkulus2-Kurva",
+      "program": "c:/Users/faldo/Documents/File Kuliah/KULIAH/SEMESTER 3/Kalkulus 2/Project Kalkulus/Kalkulus2-Kurva/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

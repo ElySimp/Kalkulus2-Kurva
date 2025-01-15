@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build SFML Project",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-Wall",
+                "-Wextra",
+                "-g3",
+                "-I", "C:/msys64/mingw64/include",
+                "${file}",
+                "-o", "${fileBasenameNoExtension}.exe",
+                "C:/msys64/mingw64/lib/libsfml-graphics.dll.a",
+                "C:/msys64/mingw64/lib/libsfml-window.dll.a",
+                "C:/msys64/mingw64/lib/libsfml-system.dll.a",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm",
+                "-lfreetype"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Compile SFML project using g++"
+        }
+    ]
+}
