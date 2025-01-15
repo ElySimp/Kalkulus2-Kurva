@@ -124,7 +124,6 @@ string intToString(int number) {
 int main() {
 	int titik_tengah_x; 
 	int titik_tengah_y;
-    
     int panjang;
     int lebar;
     int switching = 0;
@@ -142,7 +141,7 @@ int main() {
     panjang *= 2;
     lebar += 1;
     
-    string grafik[100000];
+    string grafik[10000];
     int middleSafe[2];
 
     middleRow = lebar / 2;
