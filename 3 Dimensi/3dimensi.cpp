@@ -1,50 +1,53 @@
+#include "matplotlibcpp.h"
+#include <vector>
 #include <iostream>
 #include <cmath>
-#include <vector>
-#include "matplotlibcpp.h" // Include matplotlibcpp
 
 namespace plt = matplotlibcpp;
 
-// Function definition for z = f(x, y)
-double calculateZ(double x, double y) {
-    return x * x + y * y; // Example function z = x^2 + y^2
+// Fungsi untuk menghitung nilai z berdasarkan x dan y: z = sin(x) * cos(y)
+double compute_z(double x, double y) {
+    return std::sin(x) * std::cos(y);
 }
 
 int main() {
-    // Define the range for z (1 to 10)
-    const int z_min = 1;
-    const int z_max = 10;
-    const double step = 0.5; // Step size for x and y
+    // Membuat chart 3D
+    PyObject* ax = plt::chart(111);
+    plt::Clear3DChart(ax);
 
-    std::vector<double> x_vals;
-    std::vector<double> y_vals;
-    std::vector<double> z_vals;
+    // Menyiapkan grid data untuk plot 3D
+    int n = 60;                   // jumlah titik per sumbu
+    double t0 = -4.0, t1 = 4.0;     // rentang nilai x dan y
+    double dT = (t1 - t0) / (n - 1);
 
-    std::cout << "z \t x \t y" << std::endl;
+    // Vektor 2D untuk menyimpan koordinat grid dan nilai z
+    std::vector<std::vector<double>> X, Y, Z;
+    std::vector<double> tx, ty, tz;
 
-    // Loop over z values
-    for (int z = z_min; z <= z_max; ++z) {
-        for (double x = -10; x <= 10; x += step) {
-            for (double y = -10; y <= 10; y += step) {
-                double calculated_z = calculateZ(x, y);
-                if (std::abs(calculated_z - z) < 0.5) { // Check if z is close to the calculated value
-                    std::cout << z << "\t" << x << "\t" << y << std::endl;
-                    x_vals.push_back(x);
-                    y_vals.push_back(y);
-                    z_vals.push_back(z);
-                }
-            }
+    // Membuat grid dan menghitung z = sin(x) * cos(y) untuk setiap titik (x, y)
+    for (int i = 0; i < n; ++i) {
+        tx.clear();
+        ty.clear();
+        tz.clear();
+        double rx = t0 + i * dT;
+        for (int j = 0; j < n; ++j) {
+            double ry = t0 + j * dT;
+            tx.push_back(rx);
+            ty.push_back(ry);
+            tz.push_back(compute_z(rx, ry));
         }
+        X.push_back(tx);
+        Y.push_back(ty);
+        Z.push_back(tz);
     }
 
-    // Setting up the 3D plot
-    plt::figure(); // Create a new figure
-    plt::named_plot3("3D Curve", x_vals, y_vals, z_vals, {{"marker", "o"}}); // Plot points with markers
-    plt::xlabel("X-axis");
-    plt::ylabel("Y-axis");
-    plt::title("3D Graph of z = x^2 + y^2");
-    plt::legend(); // Show legend
-    plt::show();   // Display the plot
+    // Mem-plot permukaan 3D dengan warna biru dan tingkat transparansi 0.9
+    plt::surface3D(ax, X, Y, Z, "blue", 0.9);
+    plt::xlabel("Sumbu X");
+    plt::ylabel("Sumbu Y");
+
+    // Menampilkan plot
+    plt::show();
 
     return 0;
 }
