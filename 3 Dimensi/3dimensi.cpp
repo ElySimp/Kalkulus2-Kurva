@@ -3,28 +3,21 @@
 #include <iostream>
 #include <cmath>
 
-namespace plt = matplotlibcpp;
+using namespace std;
+using namespace matplotlibcpp;
 
-// Fungsi untuk menghitung nilai z berdasarkan x dan y: z = sin(x) * cos(y)
 double compute_z(double x, double y) {
-    return std::sin(x) * std::cos(y);
+    return sin(x) * cos(y);
 }
 
 int main() {
-    // Membuat chart 3D
-    PyObject* ax = plt::chart(111);
-    plt::Clear3DChart(ax);
-
-    // Menyiapkan grid data untuk plot 3D
-    int n = 60;                   // jumlah titik per sumbu
-    double t0 = -4.0, t1 = 4.0;     // rentang nilai x dan y
+    PyObject* ax = chart(111);
+    Clear3DChart(ax);
+    int n = 60;
+    double t0 = -4.0, t1 = 4.0;
     double dT = (t1 - t0) / (n - 1);
-
-    // Vektor 2D untuk menyimpan koordinat grid dan nilai z
-    std::vector<std::vector<double>> X, Y, Z;
-    std::vector<double> tx, ty, tz;
-
-    // Membuat grid dan menghitung z = sin(x) * cos(y) untuk setiap titik (x, y)
+    vector<vector<double>> X, Y, Z;
+    vector<double> tx, ty, tz;
     for (int i = 0; i < n; ++i) {
         tx.clear();
         ty.clear();
@@ -40,14 +33,9 @@ int main() {
         Y.push_back(ty);
         Z.push_back(tz);
     }
-
-    // Mem-plot permukaan 3D dengan warna biru dan tingkat transparansi 0.9
-    plt::surface3D(ax, X, Y, Z, "blue", 0.9);
-    plt::xlabel("Sumbu X");
-    plt::ylabel("Sumbu Y");
-
-    // Menampilkan plot
-    plt::show();
-
+    surface3D(ax, X, Y, Z, "blue", 0.9);
+    xlabel("Sumbu X");
+    ylabel("Sumbu Y");
+    show();
     return 0;
 }

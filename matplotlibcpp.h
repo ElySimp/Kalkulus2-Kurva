@@ -2,8 +2,7 @@
 
 // Python headers must be included before any system headers, since
 // they define _POSIX_C_SOURCE
-// #include <C:\Python312\include\Python.h>
-#include <C:\Users\faldo\AppData\Local\Programs\Python\Python311\include\Python.h>
+#include <C:\Python312\include\Python.h>
 
 #include <vector>
 #include <map>
@@ -18,8 +17,7 @@
 
 #ifndef WITHOUT_NUMPY
 #  define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-// #  include <C:\Python312\Lib\site-packages\numpy\_core\include\numpy\arrayobject.h>
-#  include <C:\Users\faldo\AppData\Local\Programs\Python\Python311\Lib\site-packages\numpy\_core\include\numpy\arrayobject.h>
+#  include <C:\Python312\Lib\site-packages\numpy\_core\include\numpy\arrayobject.h>
 
 #  ifdef WITH_OPENCV
 #    include <opencv2/opencv.hpp>
